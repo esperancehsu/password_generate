@@ -123,29 +123,32 @@ function renderPasswords() {
     else if (item.strength > 40) color = "orange";
 
     const div = document.createElement("div");
+    // Use column layout on small screens and row layout on larger ones.
     div.className =
-      "bg-white rounded-xl flex items-start justify-between p-4 shadow gap-4";
+      "bg-white rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 shadow gap-4";
 
+    // min-w-0 + break-words ensures long passwords wrap instead of overflowing.
     div.innerHTML = `
-      <div>
-        <span class="text font-mono">${item.password}</span>
-        <span class="text block text-gray-500">
+      <div class="flex-1 min-w-0">
+  <span class="text font-mono break-words pw-break block">${item.password}</span>
+        <span class="text block text-gray-500 mt-2">
           Créé le ${item.date} <br>
           Force: ${item.strength}/100 
           <span style="display:inline-block;width:10px;height:10px;background-color:${color};border-radius:50%;margin-left:5px;"></span>
         </span>
       </div>
-      <div class="flex flex-col gap-2">
-        <button class="bg-green-500 text-white rounded-xl px-3 py-2">Copier</button>
-        <button class="bg-red-500 text-white rounded-xl px-3 py-2">Supprimer</button>
+      <div class="flex flex-col gap-2 ml-0 sm:ml-4">
+        <button class="copy-btn bg-green-500 text-white rounded-xl px-3 py-2">Copier</button>
+        <button class="delete-btn bg-red-500 text-white rounded-xl px-3 py-2">Supprimer</button>
       </div>
     `;
 
-    div.querySelector(".bg-green-500").addEventListener("click", () => {
+    // Use explicit selectors for the buttons to avoid relying on color classes.
+    div.querySelector(".copy-btn").addEventListener("click", () => {
       copyPassword(item.password);
     });
 
-    div.querySelector(".bg-red-500").addEventListener("click", () => {
+    div.querySelector(".delete-btn").addEventListener("click", () => {
       savedPasswords.splice(index, 1);
       renderPasswords();
       updateStats();
